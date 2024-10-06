@@ -72,7 +72,17 @@ AVLNode<T>* AVLTree<T>::minValueNode(AVLNode<T>* node) {
 // Inserción
 template <typename T>
 AVLNode<T>* AVLTree<T>::insert(AVLNode<T>* node, T key) {
-  // COMPLETE HERE
+    if (node == nullptr) {
+        return new TreeNode(key);
+    }
+
+    if (node != nullptr && key < node->val){
+        node->left = insertIntoBST(root->left, key);
+    }else if(node != nullptr && key > node->val){
+        node->right = insertIntoBST(node->right, key);
+    }
+
+    return root;
 }
 
 // Eliminar un nodo
