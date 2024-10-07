@@ -37,8 +37,8 @@ AVLNode<T>* AVLTree<T>::rightRotate(AVLNode<T>* y) {
     y->left = x->right;
     x->right = y;
 
-    y->height = max(height(y->left), height(y->right)) + 1;
-    x->height = max(height(x->left), height(x->right)) + 1;
+    y->height = std::max(height(y->left), height(y->right)) + 1;
+    x->height = std::max(height(x->left), height(x->right)) + 1;
 
     return x;
 }
@@ -76,10 +76,10 @@ AVLNode<T>* AVLTree<T>::insert(AVLNode<T>* node, T key) {
         return new AVLNode<T>(key);
     }
 
-    if (node != nullptr && key < node->val){
-        node->left = insertIntoBST(root->left, key);
-    }else if(node != nullptr && key > node->val){
-        node->right = insertIntoBST(node->right, key);
+    if (node != nullptr && key < node->data){
+        node->left = insert(node->left, key);
+    }else if(node != nullptr && key > node->data){
+        node->right = insert(node->right, key);
     }
 
     return root;
