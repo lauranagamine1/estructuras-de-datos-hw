@@ -73,7 +73,7 @@ AVLNode<T>* AVLTree<T>::minValueNode(AVLNode<T>* node) {
 template <typename T>
 AVLNode<T>* AVLTree<T>::insert(AVLNode<T>* node, T key) {
     if (node == nullptr) {
-        return new TreeNode(key);
+        return new AVLNode<T>(key);
     }
 
     if (node != nullptr && key < node->val){
@@ -88,7 +88,80 @@ AVLNode<T>* AVLTree<T>::insert(AVLNode<T>* node, T key) {
 // Eliminar un nodo
 template <typename T>
 AVLNode<T>* AVLTree<T>::remove(AVLNode<T>* root, T key) {
-  // COMPLETE HERE
+    if (root == NULL)
+        return root;
+
+    if (key < root->data) {
+        root->left = remove(root->left, key);
+    }
+    else if (key > root->data) {
+        root->right = remove(root->right, key);
+    }
+    else {
+        // un hijo o sin hijos
+        if (root->left == NULL || root->right == NULL) {
+            AVLNode<T>* temp;
+            if (root->left != NULL) {
+                temp = root->left;
+            } else {
+                temp = root->right;
+            }
+
+            // sin hijos
+            if (temp == NULL) {
+                temp = root;
+                root = NULL;
+            }
+            else { // un hijo
+                *root = *temp;
+            }
+            delete temp;
+        }
+        else {
+            // dos hijos
+            AVLNode<T>* temp = minValueNode(root->right);
+            root->data = temp->data;
+            root->right = remove(root->right, temp->data);
+        }
+    }
+
+    // un nodo
+    if (root == NULL)
+        return root;
+
+    int leftHeight = height(root->left);
+    int rightHeight = height(root->right);
+    if (leftHeight > rightHeight) {
+        root->height = 1 + leftHeight;
+    } else {
+        root->height = 1 + rightHeight;
+    }
+
+    int balance = getBalance(root);
+
+    // izquierda-izquierda
+    if (balance > 1 && getBalance(root->left) >= 0)
+        return rightRotate(root);
+
+    // izquierda-derecha
+    if (balance > 1 && getBalance(root->left) < 0) {
+        root->left = leftRotate(root->left);
+        return rightRotate(root);
+    }
+
+    // derecha-derecha
+    if (balance < -1 && getBalance(root->right) <= 0)
+        return leftRotate(root);
+
+    // derecha-izquierda
+    if (balance < -1 && getBalance(root->right) > 0) {
+        root->right = rightRotate(root->right);
+        return leftRotate(root);
+    }
+
+    return root;
+
+
 }
 
 // Búsqueda
@@ -149,12 +222,12 @@ void AVLTree<T>::postorder(AVLNode<T>* root, std::vector<T>& ret) {
 
 template <typename T>
 void AVLTree<T>::insert(T key) {
-  // COMPLETE HERE
+    root = insert(root, key);
 }
 
 template <typename T>
 void AVLTree<T>::remove(T key) {
-  // COMPLETE HERE
+    root = remove(root, key);
 }
 
 template <typename T>
