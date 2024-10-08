@@ -36,3 +36,4 @@ test-hw1: ## Compile and test the hw1
 
 clean:
 	rm -rf $(O_EXAMPLE) $(O_HW1)
+

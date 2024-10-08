@@ -20,6 +20,9 @@ AVLTree<T>::AVLTree() : root(nullptr) {}
 
 template <typename T>
 int AVLTree<T>::height(AVLNode<T>* node) {
+    if(node == nullptr) {
+        return -1;
+    }
     return node->height;
 }
 
@@ -80,15 +83,36 @@ AVLNode<T>* AVLTree<T>::insert(AVLNode<T>* node, T key) {
     if (key < node->data) {
         node->left = insert(node->left, key);
     } else {
-
-            node->right = new AVLNode<T>(key);
-            return node->right;
-        } else {
-            return insert(node->right, key);
-        }
+        node->right = insert(node->right, key);
     }
 
-    return root;
+    int leftHeight = height(node->left);
+    int rightHeight = height(node->right);
+    node->height = std::max(leftHeight, rightHeight) + 1;
+
+    int balance = getBalance(node);
+
+    // izquierda-izquierda
+    if (balance > 1 && getBalance(node->left) >= 0)
+        return rightRotate(node);
+
+    // izquierda-derecha
+    if (balance > 1 && getBalance(node->left) < 0) {
+        node->left = leftRotate(node->left);
+        return rightRotate(node);
+    }
+
+    // derecha-derecha
+    if (balance < -1 && getBalance(node->right) <= 0)
+        return leftRotate(node);
+
+    // derecha-izquierda
+    if (balance < -1 && getBalance(node->right) > 0) {
+        node->right = rightRotate(node->right);
+        return leftRotate(node);
+    }
+
+    return node;
 }
 
 // Eliminar un nodo
@@ -166,8 +190,6 @@ AVLNode<T>* AVLTree<T>::remove(AVLNode<T>* root, T key) {
     }
 
     return root;
-
-
 }
 
 // Búsqueda
@@ -207,9 +229,9 @@ void AVLTree<T>::inorder(AVLNode<T>* root, std::vector<T>& ret) {
         return;
     }
 
-    preorder(root->left, ret);
+    inorder(root->left, ret);
     ret.push_back(root->data);
-    preorder(root->right, ret);
+    inorder(root->right, ret);
 }
 
 // Recorrido postorder
@@ -219,8 +241,8 @@ void AVLTree<T>::postorder(AVLNode<T>* root, std::vector<T>& ret) {
         return;
     }
 
-    preorder(root->left, ret);
-    preorder(root->right, ret);
+    postorder(root->left, ret);
+    postorder(root->right, ret);
     ret.push_back(root->data);
 }
 
@@ -264,7 +286,7 @@ std::vector<T> AVLTree<T>::postorderTraversal() {
 
 template <typename T>
 int AVLTree<T>::height() {
-    height(root);
+    return height(root);
 }
 
 template <typename T>
