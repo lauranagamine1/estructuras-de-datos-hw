@@ -11,6 +11,10 @@ CC_HW1=hw1/hw1-test.cc
 O_HW2=hw2/hw2
 CC_HW2=hw2/hw2-test.cc
 
+# adicionales test creados
+O_HW2_ADICIONALES=hw2/hw2_test_adicionales
+CC_HW2_ADICIONALES=hw2/hw2_test_adicionales.cc
+
 O_HW3=hw3/hw3
 CC_HW3=hw3/hw3-test.cc
 
@@ -83,6 +87,15 @@ test-hw5: ## Compile and test the hw5
 	docker run -v $(shell pwd):/workdir -w /workdir -it ubuntu-aed:1 ./$(O_HW5)
 	echo "cleaning"
 	docker run -v $(shell pwd):/workdir -w /workdir -it ubuntu-aed:1 rm ./$(O_HW5)
+
+test-hw2-adicionales: ## Compile y test de los tests adicionales de hw2
+	docker build . -f Dockerfile-aed -t ubuntu-aed:1 --build-arg uid=$(shell id -u) --build-arg gid=$(shell id -g) --build-arg user=dockeruser --build-arg group=dockergroup
+	echo "compilando hw2_test_adicionales..."
+	docker run -v $(shell pwd):/workdir -w /workdir -it ubuntu-aed:1 g++ -o $(O_HW2_ADICIONALES) $(CC_HW2_ADICIONALES) -lgtest -lgtest_main -pthread
+	echo "testeando hw2_test_adicionales"
+	docker run -v $(shell pwd):/workdir -w /workdir -it ubuntu-aed:1 ./$(O_HW2_ADICIONALES)
+	echo "limpiando"
+	docker run -v $(shell pwd):/workdir -w /workdir -it ubuntu-aed:1 rm ./$(O_HW2_ADICIONALES)
 
 clean:
 	rm -rf $(O_EXAMPLE) $(O_HW1) $(O_HW2) $(O_HW3) $(O_HW4) $(O_HW5)
