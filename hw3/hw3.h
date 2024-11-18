@@ -17,16 +17,41 @@ automático, con el mismo prototipo mostrado en este archivo.
 *******************************************************************************/
 
 template <typename T>
+struct Node {
+    T val;
+    Node* left;
+    Node* right;
+
+    Node(T val) {
+        this->val = val;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+
+template <typename T>
 struct BST {
+    Node<T>* root;
+
     BST();
+
+    void destructorAux(Node<T>* node);
 
     ~BST();
 
+    Node<T>* insertAux(T const& value, Node<T>* node);
+
     void insert(T const& value);
+
+    bool searchAux(T const& value, Node<T>* node) const;
 
     bool search(T const& value) const;
 
+    Node<T>* removeAux(T const& value, Node<T>* node);
+
     void remove(T const& value);
+
+    int sizeAux(Node<T>* node) const;
 
     size_t size() const;
 
