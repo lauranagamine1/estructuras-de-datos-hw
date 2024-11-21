@@ -3,6 +3,8 @@
 
 #include <string>
 #include <vector>
+#include <stack>
+#include <queue>
 
 #include "hw5.h"
 
