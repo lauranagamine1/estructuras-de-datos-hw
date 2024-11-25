@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <climits>
 #define d 256
 
 #include "hw4.h"

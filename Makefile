@@ -24,6 +24,9 @@ CC_HW4=hw4/hw4-test.cc
 O_HW5=hw5/hw5
 CC_HW5=hw5/hw5-test.cc
 
+O_HW4_ADICIONALES=hw4/hw4
+CC_HW4_ADICIONALES=hw4/hw4_test_adicionales.cc
+
 help: ## Display available commands in Makefile
 	@grep -hE '^[a-zA-Z_0-9-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
@@ -96,6 +99,16 @@ test-hw2-adicionales: ## Compile y test de los tests adicionales de hw2
 	docker run -v $(shell pwd):/workdir -w /workdir -it ubuntu-aed:1 ./$(O_HW2_ADICIONALES)
 	echo "limpiando"
 	docker run -v $(shell pwd):/workdir -w /workdir -it ubuntu-aed:1 rm ./$(O_HW2_ADICIONALES)
+
+test-hw4-adicional: ## Compile and test the hw4 additional implementation
+	docker build . -f Dockerfile-aed -t ubuntu-aed:1 --build-arg uid=$(shell id -u) --build-arg gid=$(shell id -g) --build-arg user=dockeruser --build-arg group=dockergroup
+	echo "compiling hw4_adicional..."
+	docker run -v $(shell pwd):/workdir -w /workdir -it ubuntu-aed:1 g++ -o $(O_HW4_ADICIONALES) $(CC_HW4_ADICIONALES) -lgtest -lgtest_main -pthread
+	echo "testing hw4_adicional"
+	docker run -v $(shell pwd):/workdir -w /workdir -it ubuntu-aed:1 ./$(O_HW4_ADICIONALES)
+	echo "cleaning"
+	docker run -v $(shell pwd):/workdir -w /workdir -it ubuntu-aed:1 rm ./$(O_HW4_ADICIONALES)
+
 
 clean:
 	rm -rf $(O_EXAMPLE) $(O_HW1) $(O_HW2) $(O_HW3) $(O_HW4) $(O_HW5)
