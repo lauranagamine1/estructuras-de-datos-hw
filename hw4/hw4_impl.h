@@ -39,7 +39,7 @@ std::vector<int> stringMatch_RabinKarp(std::string const& text,
   // Implemente aqui el algoritmo de Rabin-Karp para resolver el problema
   // de string matching.
 
-    const int q = 101; // # primo para calcular el hash
+    const int q = INT_MAX; // # primo para calcular el hash
     int M = pattern.size();
     int N = text.size();
     int p = 0; // hash para el patron
